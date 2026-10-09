@@ -1,0 +1,82 @@
+/* jarrettwroten.com — DRAFT layer (2026-10-09). Loads after the live jw.css; changes only what the SOTD research supports.
+   Tags: [M] measured · [M~] matched to a measured profile · [P] proxy · [D] derived from medians · [U] UNMEASURED-DEFAULT (our choice).
+   Sources: /workspace/sotd-playbook/{PLAYBOOK.md,recipes/tokens.css,pattern-index.json} */
+:root{
+  --dur-ui:400ms;        /* [M] ladder, 11 sites */
+  --dur-hover:500ms;     /* [M] ladder, 10 sites; outfit + sohub hovers */
+  --dur-panel:600ms;     /* [M] ladder, 10 sites */
+  --dur-reveal:1000ms;   /* [M] most common, 14 sites */
+  --dur-hero:1200ms;     /* [M] 9 sites */
+  --ease-std:cubic-bezier(0.4,0,0.2,1);     /* [M] outfit computed */
+  --ease-inout:cubic-bezier(0.87,0,0.13,1); /* [M] outfit img class */
+  --ease-pop:cubic-bezier(.22,.68,0,1);     /* [M] sohub pill */
+  --tap-min:44px;                           /* [U] our minimum (odyssee phone Close measured 52x12) */
+  --hero-track:-0.02em;                     /* [D] tracking IQR -0.03..0 */
+}
+
+/* ---------- HERO: one film in the first viewport (#5) + bigger, tighter display line (#7) ---------- */
+.hero--film{display:block;min-height:0;padding:calc(var(--hdr) + clamp(20px,4.5vh,48px)) 0 0;overflow:clip}
+.hero__head{position:relative;z-index:3;max-width:1600px;margin:0 auto;padding:0 var(--pad)}
+.hero--film .hero__title{letter-spacing:var(--hero-track)}
+/* desktop: one line, ~9.4vw (between the 6.9vw "largest anywhere" median and the 25.6vw food/trade median) [D] */
+.hero--film .hero__l1{font-size:min(9.4vw,15.5vh,150px);line-height:.95;white-space:nowrap}   /* lh [D] 0.9-1.0 */
+.hero--film .hero__l2{font-size:min(3.4vw,6vh,52px);margin-top:.18em}
+.hero__row{display:flex;align-items:flex-end;justify-content:space-between;gap:24px 48px;flex-wrap:wrap;margin-top:clamp(14px,2.6vh,28px)}
+.hero--film .hero__sub{margin-top:0;max-width:30em}
+.hero--film .hero__ctas{margin-top:0}
+
+/* the film plate: inset rounded frame that opens to full bleed as you scroll (scrubbed in JS, ease none) */
+.plate{margin:clamp(22px,4vh,44px) 0 0;position:relative;z-index:2}
+.plate__frame{position:relative;width:100%;aspect-ratio:16/10;max-height:calc(100svh - var(--hdr));background:#111;overflow:hidden;
+  clip-path:inset(0 var(--pad) 0 var(--pad) round 18px)}
+.plate__v{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}  /* raw footage: no scrim, no filter */
+.plate__cap{display:flex;align-items:center;justify-content:space-between;gap:8px 24px;flex-wrap:wrap;padding:14px var(--pad) 0;max-width:1600px;margin:0 auto}
+.plate__now{font:500 17px/1.3 var(--fu);color:var(--bone)}
+.plate__name{font:400 26px/1 var(--fd);letter-spacing:0}
+.plate__cat{color:var(--mute);margin-left:10px}
+
+/* ---------- REEL: draggable, never traps a vertical swipe (#17, #28) ---------- */
+.reel__strip{touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}   /* [M] paul-kalkbrenner / sutera touch traps */
+.reel__strip.is-drag{cursor:grabbing}
+.reel__track{animation:none!important;will-change:transform}
+.reel__phone img{-webkit-user-drag:none;user-drag:none;pointer-events:none}
+
+/* ---------- Hover timings moved onto the measured ladder/curves (#12, #18) ---------- */
+.card__frame{transition:transform var(--dur-hover) var(--ease-std),box-shadow var(--dur-hover) var(--ease-std)}
+.card__frame .media__v,.card__frame .media__i{transition:transform var(--dur-hover) var(--ease-inout)}
+.hdr__cta,.hdr__menu{transition:transform var(--dur-hover) var(--ease-pop),background-color .3s}
+@media (hover:hover){.hdr__cta:hover,.hdr__menu:hover{transform:scale(1.1)}}   /* [M] sohub pill scale-110 / 500ms */
+
+/* ---------- MENU: full-height takeover with a panel reveal (#3, R5) ---------- */
+.menu{clip-path:inset(0 0 100% 0);transition:clip-path var(--dur-panel) var(--ease-inout)}   /* 600ms [M]; pairing [U] */
+.menu.is-open{clip-path:inset(0 0 0 0)}
+
+/* ---------- BACK TO TOP: real button, eased scroll ~1.7s (#29, R8) ---------- */
+.totop{display:inline-flex;align-items:center;min-height:var(--tap-min);min-width:var(--tap-min);margin:8px 0 18px;padding:0 20px;border-radius:999px;
+  border:1px solid rgba(237,232,225,.28);background:transparent;color:var(--bone);font:600 15px/1 var(--fu);cursor:pointer;
+  transition:transform var(--dur-hover) var(--ease-pop),background-color .3s}
+@media (hover:hover){.totop:hover{transform:scale(1.1);background:rgba(237,232,225,.08)}}
+
+/* ---------- 44px tap targets on footer + menu links ---------- */
+.ftr__list a{display:inline-flex;align-items:center;min-height:var(--tap-min)}
+.ftr__list li{margin:0}
+
+/* ---------- PHONE: recompose, don't shrink (#4) ---------- */
+@media (max-width:900px){
+  .hero--film{padding-top:calc(var(--hdr) + 22px)}
+  .hero--film .hero__l1{white-space:normal;font-size:clamp(44px,12.8vw,58px);line-height:.95}  /* ~0.42x desktop px; 12.8vw (phone range 10.4-19.4vw [M]) */
+  .hero--film .hero__l2{font-size:clamp(24px,6.9vw,30px)}
+  .hero__row{display:block;margin-top:16px}
+  .hero--film .hero__ctas{margin-top:20px}
+  .plate{margin-top:26px}
+  .plate__frame{clip-path:inset(0 var(--pad) 0 var(--pad) round 14px)}
+  .plate{display:flex;flex-direction:column-reverse}  /* phone: caption above the film so the fixed Pause pill never covers it */
+  .plate__cap{padding:0 var(--pad) 8px;align-items:flex-end;flex-wrap:nowrap;width:100%;box-sizing:border-box}
+  .plate__lg{display:none}
+  .plate__name{font-size:22px}
+  .plate__cat{display:block;margin:4px 0 0;font-size:15px}
+}
+@media (max-width:560px){
+  .hero--film .hero__ctas .btn{width:100%}
+  .hero--film .hero__ctas{gap:4px 22px}
+}
