@@ -18,10 +18,8 @@
   /* smooth scroll */
   var lenis=null;
   if(window.Lenis){
-    /* DRAFT: SNAPPY scroll [M~] — odyssee (clinic analog) settles one wheel notch in ~550ms; Lenis 1.3.23 bench match = duration 0.6 + expo.
-       Live was lerp 0.1 (the ~870-1000ms "glide" profile). Touch stays native (Lenis on touch was not isolated in the data). */
-    var expo=function(t){return Math.min(1,1.001-Math.pow(2,-10*t));};
-    lenis=new Lenis({autoRaf:false,duration:0.6,easing:expo,smoothWheel:true});
+    /* Scroll feel = live b16d611 exactly (Jarrett, 10-09): Lenis 1.1.13, lerp 0.1. */
+    lenis=new Lenis({lerp:0.1,wheelMultiplier:1,smoothWheel:true});
     if(hasG&&window.ScrollTrigger){ lenis.on("scroll",ScrollTrigger.update); gsap.ticker.add(function(t){lenis.raf(t*1000);}); gsap.ticker.lagSmoothing(0); }
     else { (function raf(t){lenis.raf(t);requestAnimationFrame(raf);})(0); }
     window.__lenis=lenis;
@@ -91,9 +89,9 @@
     if(window.ScrollTrigger){
       /* headings */
       $$("[data-split]").forEach(function(h){
-        gsap.from($$(".wi",h),{yPercent:110,duration:1.0,ease:E,stagger:.06,scrollTrigger:{trigger:h,start:"top 86%"}});
+        gsap.from($$(".wi",h),{yPercent:110,duration:1.1,ease:E,stagger:.06,scrollTrigger:{trigger:h,start:"top 86%"}});
       });
-      ScrollTrigger.batch("[data-reveal]",{start:"top 90%",onEnter:function(b){gsap.to(b,{opacity:1,y:0,duration:1.0,ease:E,stagger:.12,overwrite:true});}});
+      ScrollTrigger.batch("[data-reveal]",{start:"top 90%",onEnter:function(b){gsap.to(b,{opacity:1,y:0,duration:1.1,ease:E,stagger:.12,overwrite:true});}});
       /* path line draw */
       var pl=d.getElementById("pathLine");
       if(pl){ var L=pl.getTotalLength(); pl.style.strokeDasharray=L; pl.style.strokeDashoffset=L;
